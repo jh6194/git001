@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wecar.mapper.ReviewMapper">
+	<select id="list" resultType="ReviewDto">
+		select * from review order by sno desc;
+	</select>
+	<select id="writeView" resultType="UserDto">
+		select uno, id from wecar_user join reservation using(uno) where rno=#{rno}
+	</select>
+	<insert id="write"> 
+		insert into review(star, sname, scontent, sfile, sdate, sip, cno, uno) values(#{star}, #{sname}, #{scontent}, #{sfile}, #{sdate}, #{sip}, #{cno}, #{uno})
+	</insert>
+	<update id="state">
+		update reservation set state=3 where rno=#{rno}
+	</update>
+	<delete id="delete">
+		delete from review where sno=#{sno}
+	</delete>
+	<select id="listPage" parameterType="ReviewPagingDto" resultType="ReviewDto">
+		select sno, star, sname, scontent, sfile, DATE_FORMAT(sdate,'%Y-%m-%d') as sdate, sip, cno, (select model from wecar_car where cno=r.cno) as model, uno from review r where uno=#{uno} order by sno desc limit #{pstartno}, 10
+	</select>
+	<select id="listSum" resultType="int">
+		select count(*) from review
+	</select>
+</mapper>
